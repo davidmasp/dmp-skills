@@ -1,0 +1,87 @@
+from __future__ import annotations
+
+import tempfile
+import textwrap
+import unittest
+from pathlib import Path
+
+from agent_skills.config import load_config
+
+
+class LoadConfigTests(unittest.TestCase):
+    def test_load_config_reads_repository_urls(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            config_path = root / "skills.toml"
+            config_path.write_text(
+                textwrap.dedent(
+                    """
+                    [installation]
+                    default_target = "./target"
+
+                    [repositories.obsidian]
+                    path = "external/obsidian-skills"
+                    url = "https://example.com/obsidian.git"
+
+                    [[skills.skill]]
+                    name = "daily-notes"
+                    repo = "obsidian"
+                    enabled = true
+                    """
+                ).strip()
+            )
+
+            config = load_config(config_path)
+
+            self.assertEqual(
+                config.repositories["obsidian"].url,
+                "https://example.com/obsidian.git",
+            )
+            self.assertEqual(config.default_target, (root / "target").resolve())
+
+    def test_load_config_requires_repository_url(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            config_path = root / "skills.toml"
+            config_path.write_text(
+                textwrap.dedent(
+                    """
+                    [repositories.obsidian]
+                    path = "external/obsidian-skills"
+                    """
+                ).strip()
+            )
+
+            with self.assertRaisesRegex(ValueError, "missing a url"):
+                load_config(config_path)
+
+    def test_load_config_rejects_duplicate_skill_names(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            config_path = root / "skills.toml"
+            config_path.write_text(
+                textwrap.dedent(
+                    """
+                    [repositories.obsidian]
+                    path = "external/obsidian-skills"
+                    url = "https://example.com/obsidian.git"
+
+                    [[skills.skill]]
+                    name = "defuddle"
+                    repo = "external/obsidian-skills/skills/defuddle"
+                    enabled = true
+
+                    [[skills.skill]]
+                    name = "defuddle"
+                    repo = "external/obsidian-skills/skills/other"
+                    enabled = true
+                    """
+                ).strip()
+            )
+
+            with self.assertRaisesRegex(ValueError, "Duplicate skill name"):
+                load_config(config_path)
+
+
+if __name__ == "__main__":
+    unittest.main()

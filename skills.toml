@@ -1,0 +1,43 @@
+[installation]
+default_target = "~/.agents/skills"
+
+[repositories.obsidian]
+path = "external/kepano/obsidian-skills"
+url = "https://github.com/kepano/obsidian-skills.git"
+
+#[repositories.scientific]
+#path = "external/kdense/claude-scientific-skills"
+#url = "https://github.com/K-Dense-AI/claude-scientific-skills.git"
+
+#[repositories.anthropic]
+#path = "external/anthropic-skills"
+#url = "https://github.com/anthropics/skills.git"
+
+[[skills.skill]]
+name = "defuddle"
+repo = "external/kepano/obsidian-skills/skills/defuddle"
+enabled = true
+
+[[skills.skill]]
+name = "obsidian-bases"
+repo = "external/kepano/obsidian-skills/skills/obsidian-bases"
+enabled = true
+
+[[skills.skill]]
+name = "obsidian-cli"
+repo = "external/kepano/obsidian-skills/skills/obsidian-cli"
+enabled = true
+
+[[skills.skill]]
+name = "obsidian-markdown"
+repo = "external/kepano/obsidian-skills/skills/obsidian-markdown"
+enabled = true
+
+[[skills.skill]]
+name = "ics-extractor"
+repo = "dmp-skills/ics-extractor"
+enabled = true
+
+[update]
+exclude = [
+]

@@ -1,0 +1,126 @@
+Metadata-Version: 2.4
+Name: agent-skills
+Version: 0.1.0
+Summary: Git-native management and installation of AI agent skills
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: typer>=0.12.0
+
+# Agent Skills
+
+Git-native management for AI agent skills using submodules, TOML configuration, and symlink-based installation.
+
+## Goals
+
+- Track upstream skill repositories with Git submodules
+- Curate a subset of skills from each repository
+- Install skills as symbolic links instead of copying files
+- Reproduce the same skill set across multiple machines
+- Keep the toolchain minimal: `git`, `uv`, Python, Typer, Rich
+
+## Repository Layout
+
+```text
+agent-skills/
+├─ skills.toml
+├─ external/
+│  ├─ obsidian-skills/
+│  ├─ claude-scientific-skills/
+│  └─ anthropic-skills/
+├─ scripts/
+│  ├─ agent_skills.py
+│  ├─ install_skills.py
+│  ├─ update_skill.py
+│  └─ update_submodules.py
+├─ src/agent_skills/
+├─ pyproject.toml
+└─ README.md
+```
+
+## Clone
+
+Clone with submodules:
+
+```bash
+git clone --recurse-submodules https://github.com/<org>/agent-skills.git
+cd agent-skills
+```
+
+If already cloned without submodules:
+
+```bash
+git submodule update --init --recursive
+```
+
+## Configure Skills
+
+Edit [`skills.toml`](/Users/david.mas/projects/dmp-skills/skills.toml) to choose repositories and enable skills.
+
+## Install Skills
+
+```bash
+uv run scripts/agent_skills.py install
+uv run scripts/agent_skills.py update-submodules
+uv run scripts/agent_skills.py update-skill anthropic
+```
+
+The original script paths remain as thin compatibility wrappers around the unified CLI:
+
+```bash
+uv run scripts/install_skills.py install
+uv run scripts/update_submodules.py update-submodules
+uv run scripts/update_skill.py update-skill anthropic
+```
+
+Install skills:
+
+```bash
+uv run scripts/agent_skills.py install
+```
+
+Install to a custom target:
+
+```bash
+uv run scripts/agent_skills.py install --target ~/.skills
+```
+
+Force replacement of conflicting targets:
+
+```bash
+uv run scripts/agent_skills.py install --force
+```
+
+## Update All Submodules
+
+```bash
+uv run scripts/agent_skills.py update-submodules
+```
+
+By default this skips repositories that contain excluded skills listed under `[update].exclude` in `skills.toml`.
+
+To override that safety check:
+
+```bash
+uv run scripts/agent_skills.py update-submodules --include-excluded
+```
+
+## Update One Repository
+
+```bash
+uv run scripts/agent_skills.py update-skill anthropic
+```
+
+## Add Submodules
+
+```bash
+git submodule add https://github.com/kepano/obsidian-skills external/obsidian-skills
+git submodule add https://github.com/K-Dense-AI/claude-scientific-skills external/claude-scientific-skills
+git submodule add https://github.com/anthropics/skills external/anthropic-skills
+```
+
+## Notes
+
+- Installation only performs filesystem checks and symlink creation.
+- Skill contents are never copied.
+- Re-running install is idempotent unless `--force` is used.
+- Update operations shell out to `git submodule update --remote --merge`.

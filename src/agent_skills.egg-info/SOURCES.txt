@@ -1,0 +1,12 @@
+README.md
+pyproject.toml
+src/agent_skills/__init__.py
+src/agent_skills/cli.py
+src/agent_skills/config.py
+src/agent_skills/git_ops.py
+src/agent_skills/install.py
+src/agent_skills.egg-info/PKG-INFO
+src/agent_skills.egg-info/SOURCES.txt
+src/agent_skills.egg-info/dependency_links.txt
+src/agent_skills.egg-info/requires.txt
+src/agent_skills.egg-info/top_level.txt
