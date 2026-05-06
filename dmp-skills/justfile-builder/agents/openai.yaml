@@ -1,0 +1,4 @@
+interface:
+  display_name: "Justfile Builder"
+  short_description: "Create focused Justfiles from repo context"
+  default_prompt: "Use $justfile-builder to create a clean Justfile for this project."

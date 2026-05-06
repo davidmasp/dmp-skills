@@ -38,6 +38,16 @@ name = "ics-extractor"
 repo = "dmp-skills/ics-extractor"
 enabled = true
 
+[[skills.skill]]
+name = "justfile-builder"
+repo = "dmp-skills/justfile-builder"
+enabled = true
+
+[[skills.skill]]
+name = "gprofiler-gost"
+repo = "dmp-skills/gprofiler-gost"
+enabled = true
+
 [update]
 exclude = [
 ]
