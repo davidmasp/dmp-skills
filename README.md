@@ -125,6 +125,18 @@ uv run scripts/agent_skills.py update-submodules --include-excluded
 uv run scripts/agent_skills.py update-skill anthropic
 ```
 
+## Run Tests
+
+```bash
+uv run python -m unittest
+```
+
+This repository also supports explicit unittest discovery:
+
+```bash
+uv run python -m unittest discover -s tests
+```
+
 ## Uninstall One Submodule
 
 ```bash
