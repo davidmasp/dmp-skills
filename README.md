@@ -69,11 +69,11 @@ enabled = true
 ## Install Skills
 
 ```bash
-uv run scripts/agent_skills.py install
-uv run scripts/agent_skills.py validate
-uv run scripts/agent_skills.py update-submodules
-uv run scripts/agent_skills.py update-skill anthropic
-uv run scripts/agent_skills.py uninstall-submodule obsidian
+uv run dmp-skills install
+uv run dmp-skills validate
+uv run dmp-skills update-submodules
+uv run dmp-skills update-skill anthropic
+uv run dmp-skills uninstall-submodule obsidian
 ```
 
 The original script paths remain as thin compatibility wrappers around the unified CLI:
@@ -88,7 +88,7 @@ uv run scripts/update_skill.py update-skill anthropic
 Install skills:
 
 ```bash
-uv run scripts/agent_skills.py install
+uv run dmp-skills install
 ```
 
 `install` now creates any missing configured submodules before linking enabled skills. Existing submodules are left unchanged.
@@ -97,7 +97,7 @@ By default, links are created under `~/.agents/skills/<name>`.
 Validate enabled skills:
 
 ```bash
-uv run scripts/agent_skills.py validate
+uv run dmp-skills validate
 ```
 
 `validate` checks each enabled skill from `skills.toml` for `SKILL.md`, required frontmatter, matching configured name, supported `agents/openai.yaml`, and generated or unexpected clutter.
@@ -105,19 +105,19 @@ uv run scripts/agent_skills.py validate
 Install to a custom target:
 
 ```bash
-uv run scripts/agent_skills.py install --target ~/.skills
+uv run dmp-skills install --target ~/.skills
 ```
 
 Force replacement of conflicting targets:
 
 ```bash
-uv run scripts/agent_skills.py install --force
+uv run dmp-skills install --force
 ```
 
 ## Update All Submodules
 
 ```bash
-uv run scripts/agent_skills.py update-submodules
+uv run dmp-skills update-submodules
 ```
 
 By default this skips repositories that contain excluded skills listed under `[update].exclude` in `skills.toml`.
@@ -125,13 +125,13 @@ By default this skips repositories that contain excluded skills listed under `[u
 To override that safety check:
 
 ```bash
-uv run scripts/agent_skills.py update-submodules --include-excluded
+uv run dmp-skills update-submodules --include-excluded
 ```
 
 ## Update One Repository
 
 ```bash
-uv run scripts/agent_skills.py update-skill anthropic
+uv run dmp-skills update-skill anthropic
 ```
 
 ## Run Tests
@@ -149,7 +149,7 @@ uv run python -m unittest discover -s tests
 ## Uninstall One Submodule
 
 ```bash
-uv run scripts/agent_skills.py uninstall-submodule obsidian
+uv run dmp-skills uninstall-submodule obsidian
 ```
 
 This deinitializes the configured submodule, removes it from the index and working tree, and deletes its cached checkout under `.git/modules/`.

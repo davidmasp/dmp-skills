@@ -12,6 +12,10 @@ app = typer.Typer(help="Manage AI agent skills from a Git-backed repository.")
 console = Console()
 
 
+def main() -> None:
+    app()
+
+
 @app.command()
 def install(
     target: str | None = typer.Option(None, help="Override installation target directory."),
