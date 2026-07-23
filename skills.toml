@@ -1,6 +1,8 @@
 [installation]
 default_target = "~/.agents/skills"
 
+[machines.fht]
+
 [repositories.obsidian]
 path = "external/kepano/obsidian-skills"
 url = "https://github.com/kepano/obsidian-skills.git"
@@ -47,6 +49,12 @@ enabled = true
 name = "gprofiler-gost"
 repo = "dmp-skills/gprofiler-gost"
 enabled = true
+
+[[skills.skill]]
+name = "add-external-skill-repo"
+repo = "dmp-skills/add-external-skill-repo"
+enabled = true
+install_targets = { fht = "./.codex" }
 
 [update]
 exclude = [

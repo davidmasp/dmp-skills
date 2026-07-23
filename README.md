@@ -91,7 +91,7 @@ install_targets = { work = "~/work/bio-agent/skills" }
 ```
 
 Machine profiles and per-skill overrides may be omitted; existing configurations continue to use
-`[installation].default_target`.
+`[installation].default_target`. Referencing an unknown machine is an error.
 
 ## Install Skills
 
@@ -141,9 +141,12 @@ Install using a named machine profile:
 uv run dmp-skills install --machine work
 ```
 
-For a machine install, a skill's `install_targets` entry takes precedence over the machine's `default_target`.
-If the machine has no default, the global installation target is used. An explicit `--target` overrides all
-machine-specific routing.
+Install targets resolve in this order:
+
+1. An explicit `--target` applies to every enabled skill.
+2. The skill's `install_targets` entry for the selected machine.
+3. The machine's `default_target`.
+4. The global `[installation].default_target`.
 
 Force replacement of conflicting targets:
 

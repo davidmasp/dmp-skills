@@ -1,6 +1,6 @@
 ---
 name: add-external-skill-repo
-description: Add or explain external skill repositories in this dmp-skills repo. Use when Codex needs to configure third-party skill collections as Git submodules, update `skills.toml`, select compatible skill folders, install enabled skills as symlinks, validate external skill compatibility, or give repo-specific guidance for examples such as `mattpocock/skills`.
+description: Add or explain external skill repositories in this dmp-skills repo. Use when Codex needs to configure third-party skill collections as Git submodules, update `skills.toml`, select compatible skill folders, configure global or machine-specific install targets, install enabled skills as symlinks, validate external skill compatibility, or give repo-specific guidance for examples such as `mattpocock/skills`.
 ---
 
 # Add External Skill Repo
@@ -17,9 +17,10 @@ Follow this sequence:
 2. Identify the upstream repository URL and choose a stable local path under `external/<owner>/<repo>` unless the repo already uses a different convention.
 3. Add a `[repositories.<key>]` entry with `path` and `url`.
 4. Inspect the upstream layout before enabling skills. Use a browser, GitHub API, `git ls-remote`, or the checked-out submodule as appropriate.
-5. Add one `[[skills.skill]]` entry per skill folder that should be installed.
-6. Run `uv run scripts/agent_skills.py install` or `uv run dmp-skills install` to add missing submodules and create symlinks.
-7. Run `uv run scripts/agent_skills.py validate` or `uv run dmp-skills validate` and fix only repo-local configuration issues unless the user explicitly wants to patch vendored content.
+5. Inspect optional `[machines.<name>]` profiles and preserve their naming and path conventions. Add machine configuration only when the user needs machine-specific installation.
+6. Add one `[[skills.skill]]` entry per skill folder that should be installed. Add `install_targets` only when that skill needs to override a machine's default target.
+7. Run `uv run scripts/agent_skills.py install` or `uv run dmp-skills install` to add missing submodules and create symlinks. Use `--machine <name>` when installing a named profile.
+8. Run `uv run scripts/agent_skills.py validate` or `uv run dmp-skills validate` and fix only repo-local configuration issues unless the user explicitly wants to patch vendored content.
 
 ## Configuration Pattern
 
@@ -39,6 +40,38 @@ name = "example-skill"
 repo = "external/example-owner/example-skills/skills/example-skill"
 enabled = true
 ```
+
+Machine-specific installation is optional. A named profile can provide a default target base:
+
+```toml
+[installation]
+default_target = "~/.agents/skills"
+
+[machines.work]
+default_target = "~/work/agent-skills"
+```
+
+A skill can override the target base for selected machines:
+
+```toml
+[[skills.skill]]
+name = "example-skill"
+repo = "external/example-owner/example-skills/skills/example-skill"
+enabled = true
+install_targets = { work = "~/work/example-project/skills" }
+```
+
+Treat configured paths as target bases. The installer appends the skill name, so the example creates
+`~/work/example-project/skills/example-skill`.
+
+Resolve install targets in this order:
+
+1. An explicit `--target` applies to every enabled skill.
+2. The selected skill's `install_targets[<machine>]` overrides that machine's default.
+3. `[machines.<machine>].default_target` applies when the skill has no override.
+4. `[installation].default_target` is the fallback.
+
+Existing configurations need no machine entries or per-skill overrides. Reject unknown machine names rather than silently falling back.
 
 The `install` command creates missing configured submodules before linking enabled skills. Existing submodules are left unchanged.
 

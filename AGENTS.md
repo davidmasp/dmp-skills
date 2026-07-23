@@ -6,7 +6,7 @@ This repository manages AI agent skills with a Git-native workflow. It curates l
 
 ## Layout
 
-- `skills.toml`: source of truth for repositories, enabled skills, install target, and update exclusions.
+- `skills.toml`: source of truth for repositories, enabled skills, optional machine-specific install targets, and update exclusions.
 - `dmp-skills/`: first-party skills maintained in this repo.
 - `external/`: vendored or submodule-backed external skill repositories.
 - `src/agent_skills/`: Python package for the management CLI.
@@ -65,12 +65,53 @@ interface:
   default_prompt: "Use $skill-name to ..."
 ```
 
+## Installation Configuration
+
+The global install target remains optional and defaults to `~/.agents/skills`:
+
+```toml
+[installation]
+default_target = "~/.agents/skills"
+```
+
+Define named machine profiles only when a machine needs a different target base:
+
+```toml
+[machines.work]
+default_target = "~/work/agent-skills"
+```
+
+Add a per-skill override only when that skill needs a different target on a selected machine:
+
+```toml
+[[skills.skill]]
+name = "example-skill"
+repo = "dmp-skills/example-skill"
+enabled = true
+install_targets = { work = "~/work/example-project/skills" }
+```
+
+Configured paths are target bases; installation appends the skill name. Resolve targets in this order:
+
+1. Explicit `--target`
+2. The skill's `install_targets[<machine>]`
+3. `[machines.<machine>].default_target`
+4. `[installation].default_target`
+
+Keep machine profiles and per-skill overrides optional so existing configurations retain their current behavior. Reject references to unknown machines rather than silently falling back.
+
 ## Development Commands
 
 Install enabled skills:
 
 ```bash
 uv run scripts/agent_skills.py install
+```
+
+Install enabled skills for a named machine profile:
+
+```bash
+uv run scripts/agent_skills.py install --machine work
 ```
 
 Validate enabled skills:
