@@ -6,6 +6,7 @@ from rich.console import Console
 from .config import load_config
 from .git_ops import uninstall_submodule, update_all_repositories, update_repository
 from .install import install_skills, render_install_summary
+from .validate import validate_skills
 
 app = typer.Typer(help="Manage AI agent skills from a Git-backed repository.")
 console = Console()
@@ -80,3 +81,23 @@ def uninstall_submodule_command(
     except ValueError as exc:
         raise typer.BadParameter(str(exc)) from exc
     console.print(f"Removed submodule {repo} ({repo_path})")
+
+
+@app.command()
+def validate(
+    config: str = typer.Option("skills.toml", help="Path to the TOML configuration file."),
+) -> None:
+    cfg = load_config(config)
+    result = validate_skills(cfg)
+
+    if result.ok:
+        console.print(f"Validated {result.checked} enabled skills.")
+        return
+
+    for issue in result.issues:
+        try:
+            path = issue.path.relative_to(cfg.root)
+        except ValueError:
+            path = issue.path
+        console.print(f"{issue.skill}: {path}: {issue.message}")
+    raise typer.Exit(code=1)

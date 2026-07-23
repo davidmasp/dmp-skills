@@ -70,6 +70,7 @@ enabled = true
 
 ```bash
 uv run scripts/agent_skills.py install
+uv run scripts/agent_skills.py validate
 uv run scripts/agent_skills.py update-submodules
 uv run scripts/agent_skills.py update-skill anthropic
 uv run scripts/agent_skills.py uninstall-submodule obsidian
@@ -92,6 +93,14 @@ uv run scripts/agent_skills.py install
 
 `install` now creates any missing configured submodules before linking enabled skills. Existing submodules are left unchanged.
 By default, links are created under `~/.agents/skills/<name>`.
+
+Validate enabled skills:
+
+```bash
+uv run scripts/agent_skills.py validate
+```
+
+`validate` checks each enabled skill from `skills.toml` for `SKILL.md`, required frontmatter, matching configured name, supported `agents/openai.yaml`, and generated or unexpected clutter.
 
 Install to a custom target:
 
