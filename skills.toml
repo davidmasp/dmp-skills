@@ -51,7 +51,7 @@ enabled = true
 
 [[skills.skill]]
 name = "teach"
-repo = "dmp-skills/teach"
+repo = "external/mattpocock/skills/skills/productivity/teach"
 enabled = true
 
 [[skills.skill]]

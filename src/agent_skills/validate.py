@@ -7,6 +7,7 @@ from .config import Config, Skill
 
 
 ALLOWED_TOP_LEVEL_ENTRIES = {"SKILL.md", "agents", "references", "scripts"}
+ALLOWED_TOP_LEVEL_SUFFIXES = {".md"}
 ALLOWED_AGENTS_FILES = {"openai.yaml"}
 CLUTTER_NAMES = {".DS_Store", "Thumbs.db", "__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache"}
 CLUTTER_SUFFIXES = {".pyc", ".pyo", ".swp", ".tmp"}
@@ -129,7 +130,7 @@ def _validate_layout(skill: Skill, skill_path: Path) -> list[SkillValidationIssu
         if _is_clutter(child):
             add(child, "unnecessary clutter file or directory")
             continue
-        if child.name not in ALLOWED_TOP_LEVEL_ENTRIES:
+        if child.name not in ALLOWED_TOP_LEVEL_ENTRIES and child.suffix not in ALLOWED_TOP_LEVEL_SUFFIXES:
             add(child, "unexpected top-level skill entry")
 
     agents_dir = skill_path / "agents"

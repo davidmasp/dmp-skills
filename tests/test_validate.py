@@ -114,6 +114,22 @@ class ValidateSkillsTests(unittest.TestCase):
             messages = sorted(issue.message for issue in result.issues)
             self.assertEqual(messages, ["unexpected top-level skill entry", "unnecessary clutter file or directory"])
 
+    def test_validate_accepts_top_level_markdown_reference_files(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skill_dir = root / "skill"
+            skill_dir.mkdir()
+            (skill_dir / "SKILL.md").write_text(
+                "---\nname: skill\ndescription: Test skill.\n---\n",
+                encoding="utf-8",
+            )
+            (skill_dir / "MISSION-FORMAT.md").write_text("# Mission Format\n", encoding="utf-8")
+            (skill_dir / "LEARNING-RECORD-FORMAT.md").write_text("# Learning Record Format\n", encoding="utf-8")
+
+            result = validate_skills(_config(root, [Skill("skill", "skill", True)]))
+
+            self.assertTrue(result.ok)
+
     def test_validate_reports_unexpected_agents_file_and_invalid_openai_yaml(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
