@@ -7,6 +7,10 @@ default_target = "~/.agents/skills"
 path = "external/kepano/obsidian-skills"
 url = "https://github.com/kepano/obsidian-skills.git"
 
+[repositories.mattpocock]
+path = "external/mattpocock/skills"
+url = "https://github.com/mattpocock/skills.git"
+
 #[repositories.scientific]
 #path = "external/kdense/claude-scientific-skills"
 #url = "https://github.com/K-Dense-AI/claude-scientific-skills.git"
@@ -33,6 +37,26 @@ enabled = true
 [[skills.skill]]
 name = "obsidian-markdown"
 repo = "external/kepano/obsidian-skills/skills/obsidian-markdown"
+enabled = true
+
+[[skills.skill]]
+name = "grill-me"
+repo = "external/mattpocock/skills/skills/productivity/grill-me"
+enabled = true
+
+[[skills.skill]]
+name = "grilling"
+repo = "external/mattpocock/skills/skills/productivity/grilling"
+enabled = true
+
+[[skills.skill]]
+name = "teach"
+repo = "dmp-skills/teach"
+enabled = true
+
+[[skills.skill]]
+name = "handoff"
+repo = "external/mattpocock/skills/skills/productivity/handoff"
 enabled = true
 
 [[skills.skill]]
