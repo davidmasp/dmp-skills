@@ -19,12 +19,13 @@ def main() -> None:
 @app.command()
 def install(
     target: str | None = typer.Option(None, help="Override installation target directory."),
+    machine: str | None = typer.Option(None, help="Named machine profile defined in the configuration."),
     force: bool = typer.Option(False, "--force", help="Replace existing targets that are not the expected symlink."),
     config: str = typer.Option("skills.toml", help="Path to the TOML configuration file."),
 ) -> None:
     cfg = load_config(config)
     try:
-        result = install_skills(cfg, target=target, force=force)
+        result = install_skills(cfg, target=target, machine=machine, force=force)
     except ValueError as exc:
         raise typer.BadParameter(str(exc)) from exc
 

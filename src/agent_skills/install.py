@@ -18,43 +18,104 @@ class SkillInstallRecord:
     target: Path
 
 
-def resolve_target_directory(config: Config, target: str | None) -> Path:
-    if target is None:
+def resolve_target_directory(
+    config: Config,
+    target: str | None,
+    machine: str | None = None,
+    skill: Skill | None = None,
+) -> Path:
+    if target is not None:
+        return Path(os.path.expanduser(target)).resolve()
+    if machine is None:
         return config.default_target
-    return Path(os.path.expanduser(target)).resolve()
+
+    try:
+        machine_config = config.machines[machine]
+    except KeyError as exc:
+        raise ValueError(f"Unknown machine '{machine}' in configuration") from exc
+
+    if skill is not None and machine in skill.install_targets:
+        return skill.install_targets[machine]
+    if machine_config.default_target is not None:
+        return machine_config.default_target
+    return config.default_target
 
 
-def build_install_records(config: Config, target_dir: Path, enabled_only: bool = True) -> list[SkillInstallRecord]:
+def build_install_records(
+    config: Config,
+    target_dir: Path | None = None,
+    enabled_only: bool = True,
+    *,
+    target: str | None = None,
+    machine: str | None = None,
+) -> list[SkillInstallRecord]:
+    if target_dir is not None and target is not None:
+        raise ValueError("Specify either target_dir or target, not both")
+
     records: list[SkillInstallRecord] = []
     for skill in config.skills:
         if enabled_only and not skill.enabled:
             continue
         source = (config.root / skill.repo).resolve()
-        target = target_dir / skill.name
-        records.append(SkillInstallRecord(skill=skill, source=source, target=target))
+        resolved_target_dir = target_dir or resolve_target_directory(
+            config,
+            target=target,
+            machine=machine,
+            skill=skill,
+        )
+        records.append(
+            SkillInstallRecord(
+                skill=skill,
+                source=source,
+                target=resolved_target_dir / skill.name,
+            )
+        )
     return records
 
 
 @dataclass(frozen=True)
 class InstallResult:
-    target_dir: Path
+    target_dirs: tuple[Path, ...]
     submodules_created: list[str]
     submodules_skipped: list[str]
     installed: list[str]
     skipped: list[str]
     missing: list[str]
 
+    @property
+    def target_dir(self) -> Path:
+        if len(self.target_dirs) != 1:
+            raise ValueError("Install used multiple target directories; use target_dirs instead")
+        return self.target_dirs[0]
 
-def install_skills(config: Config, target: str | None = None, force: bool = False) -> InstallResult:
-    target_dir = resolve_target_directory(config, target)
-    target_dir.mkdir(parents=True, exist_ok=True)
+
+def install_skills(
+    config: Config,
+    target: str | None = None,
+    machine: str | None = None,
+    force: bool = False,
+) -> InstallResult:
+    if machine is not None and machine not in config.machines:
+        raise ValueError(f"Unknown machine '{machine}' in configuration")
+
+    records = build_install_records(
+        config,
+        enabled_only=True,
+        target=target,
+        machine=machine,
+    )
+    target_dirs = tuple(sorted({record.target.parent for record in records}))
+    if not target_dirs:
+        target_dirs = (resolve_target_directory(config, target=target, machine=machine),)
+    for target_dir in target_dirs:
+        target_dir.mkdir(parents=True, exist_ok=True)
 
     submodule_result = ensure_submodules_present(config)
     installed: list[str] = []
     skipped: list[str] = []
     missing: list[str] = []
 
-    for record in build_install_records(config, target_dir=target_dir, enabled_only=True):
+    for record in records:
         if not record.source.is_dir():
             missing.append(f"{record.skill.qualified_name} -> missing directory {record.source}")
             continue
@@ -73,10 +134,10 @@ def install_skills(config: Config, target: str | None = None, force: bool = Fals
             record.target.unlink(missing_ok=True)
 
         record.target.symlink_to(record.source, target_is_directory=True)
-        installed.append(f"{record.skill.name} -> {record.source}")
+        installed.append(f"{record.skill.name}: {record.target} -> {record.source}")
 
     return InstallResult(
-        target_dir=target_dir,
+        target_dirs=target_dirs,
         submodules_created=submodule_result.created,
         submodules_skipped=submodule_result.skipped,
         installed=installed,
@@ -86,7 +147,8 @@ def install_skills(config: Config, target: str | None = None, force: bool = Fals
 
 
 def render_install_summary(result: InstallResult, console: Console) -> None:
-    summary = Table(title=f"Install summary: {result.target_dir}")
+    targets = ", ".join(str(target_dir) for target_dir in result.target_dirs)
+    summary = Table(title=f"Install summary: {targets}")
     summary.add_column("Status")
     summary.add_column("Details")
     for item in result.submodules_created:

@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from agent_skills.config import Config, Repository, Skill
+from agent_skills.config import Config, Machine, Repository, Skill
 from agent_skills.git_ops import ensure_submodules_present, uninstall_submodule
 from agent_skills.install import install_skills
 
@@ -89,6 +89,103 @@ class InstallTests(unittest.TestCase):
             self.assertEqual(link_path.resolve(), source.resolve())
             self.assertEqual(len(result.submodules_created), 1)
             self.assertEqual(result.missing, [])
+
+    def test_install_skills_uses_machine_default_and_skill_override(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            work_target = root / "work-skills"
+            project_target = root / "project-skills"
+            first_source = root / "skills" / "first"
+            second_source = root / "skills" / "second"
+            first_source.mkdir(parents=True)
+            second_source.mkdir(parents=True)
+
+            config = Config(
+                root=root,
+                default_target=root / "default-skills",
+                repositories={},
+                skills=[
+                    Skill(name="first", repo="skills/first", enabled=True),
+                    Skill(
+                        name="second",
+                        repo="skills/second",
+                        enabled=True,
+                        install_targets={"work": project_target},
+                    ),
+                ],
+                update_exclude=set(),
+                machines={
+                    "work": Machine(
+                        name="work",
+                        default_target=work_target,
+                        hostnames=(),
+                    )
+                },
+            )
+
+            with patch("agent_skills.install.ensure_submodules_present") as ensure:
+                ensure.return_value.created = []
+                ensure.return_value.skipped = []
+                result = install_skills(config, machine="work")
+
+            self.assertEqual((work_target / "first").resolve(), first_source.resolve())
+            self.assertEqual((project_target / "second").resolve(), second_source.resolve())
+            self.assertEqual(result.target_dirs, (project_target, work_target))
+
+    def test_explicit_target_overrides_machine_routing(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            explicit_target = root / "explicit-skills"
+            source = root / "skills" / "daily-notes"
+            source.mkdir(parents=True)
+
+            config = Config(
+                root=root,
+                default_target=root / "default-skills",
+                repositories={},
+                skills=[
+                    Skill(
+                        name="daily-notes",
+                        repo="skills/daily-notes",
+                        enabled=True,
+                        install_targets={"work": root / "project-skills"},
+                    )
+                ],
+                update_exclude=set(),
+                machines={
+                    "work": Machine(
+                        name="work",
+                        default_target=root / "work-skills",
+                        hostnames=(),
+                    )
+                },
+            )
+
+            with patch("agent_skills.install.ensure_submodules_present") as ensure:
+                ensure.return_value.created = []
+                ensure.return_value.skipped = []
+                result = install_skills(
+                    config,
+                    target=str(explicit_target),
+                    machine="work",
+                )
+
+            self.assertEqual((explicit_target / "daily-notes").resolve(), source.resolve())
+            self.assertEqual(result.target_dir, explicit_target.resolve())
+
+    def test_install_skills_rejects_unknown_machine(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            config = Config(
+                root=root,
+                default_target=root / "default-skills",
+                repositories={},
+                skills=[],
+                update_exclude=set(),
+            )
+
+            with self.assertRaisesRegex(ValueError, "Unknown machine 'work'"):
+                install_skills(config, machine="work")
 
     def test_uninstall_submodule_deinitializes_removes_and_cleans_modules_dir(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

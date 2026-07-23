@@ -47,7 +47,7 @@ git submodule update --init --recursive
 
 ## Configure Skills
 
-Edit [`skills.toml`](/Users/david.mas/projects/dmp-skills/skills.toml) to choose repositories and enable skills.
+Edit `skills.toml` to choose repositories and enable skills.
 
 Each repository entry must define both a local `path` and its upstream `url`:
 
@@ -65,6 +65,33 @@ name = "defuddle"
 repo = "external/obsidian-skills/skills/defuddle"
 enabled = true
 ```
+
+Machine-specific installation is optional. Define named profiles when a machine needs a different default target:
+
+```toml
+[installation]
+default_target = "~/.agents/skills"
+
+[machines.personal]
+default_target = "~/.codex/skills"
+hostnames = ["personal-mac.local"]
+
+[machines.work]
+default_target = "~/work/agent-skills"
+```
+
+A skill can override the target base for selected machines. The skill name is still appended to the configured path:
+
+```toml
+[[skills.skill]]
+name = "gprofiler-gost"
+repo = "dmp-skills/gprofiler-gost"
+enabled = true
+install_targets = { work = "~/work/bio-agent/skills" }
+```
+
+Machine profiles and per-skill overrides may be omitted; existing configurations continue to use
+`[installation].default_target`.
 
 ## Install Skills
 
@@ -107,6 +134,16 @@ Install to a custom target:
 ```bash
 uv run dmp-skills install --target ~/.skills
 ```
+
+Install using a named machine profile:
+
+```bash
+uv run dmp-skills install --machine work
+```
+
+For a machine install, a skill's `install_targets` entry takes precedence over the machine's `default_target`.
+If the machine has no default, the global installation target is used. An explicit `--target` overrides all
+machine-specific routing.
 
 Force replacement of conflicting targets:
 
