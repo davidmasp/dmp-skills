@@ -2,3 +2,6 @@ interface:
   display_name: "ICS Extractor"
   short_description: "Create one valid .ics file per parsed event."
   default_prompt: "Use $ics-extractor to parse this schedule and generate separate standards-compliant .ics files with reminders."
+
+policy:
+  allow_implicit_invocation: false

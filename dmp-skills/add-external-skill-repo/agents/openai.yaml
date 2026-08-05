@@ -2,3 +2,6 @@ interface:
   display_name: "Add External Skill Repo"
   short_description: "Configure external skill repositories"
   default_prompt: "Use $add-external-skill-repo to add an external skill repository to this repo."
+
+policy:
+  allow_implicit_invocation: false

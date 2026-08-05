@@ -1,0 +1,7 @@
+interface:
+  display_name: "Academic Research Grill"
+  short_description: "Stress-test an academic project into an executable plan"
+  default_prompt: "Use $academic-research-grill to turn this academic project outcome into a rigorous, actionable research plan."
+
+policy:
+  allow_implicit_invocation: false

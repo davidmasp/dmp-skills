@@ -2,3 +2,6 @@ interface:
   display_name: "g:GOSt Enrichment"
   short_description: "Run g:GOSt GO enrichment from gene lists"
   default_prompt: "Use $gprofiler-gost to run g:GOSt enrichment for this gene list."
+
+policy:
+  allow_implicit_invocation: false
