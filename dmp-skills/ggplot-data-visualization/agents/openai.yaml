@@ -1,0 +1,4 @@
+interface:
+  display_name: "ggplot2 Data Visualization"
+  short_description: "Create polished, honest ggplot2 figures"
+  default_prompt: "Use $ggplot-data-visualization to create or review this R visualization."

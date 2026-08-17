@@ -11,6 +11,14 @@ url = "https://github.com/kepano/obsidian-skills.git"
 path = "external/mattpocock/skills"
 url = "https://github.com/mattpocock/skills.git"
 
+[repositories.marimo]
+path = "external/marimo-team/skills"
+url = "https://github.com/marimo-team/skills.git"
+
+[repositories.marimo-pair]
+path = "external/marimo-team/marimo-pair"
+url = "https://github.com/marimo-team/marimo-pair.git"
+
 #[repositories.scientific]
 #path = "external/kdense/claude-scientific-skills"
 #url = "https://github.com/K-Dense-AI/claude-scientific-skills.git"
@@ -60,6 +68,16 @@ repo = "external/mattpocock/skills/skills/productivity/handoff"
 enabled = true
 
 [[skills.skill]]
+name = "marimo-notebook"
+repo = "external/marimo-team/skills/skills/marimo-notebook"
+enabled = true
+
+[[skills.skill]]
+name = "marimo-pair"
+repo = "external/marimo-team/marimo-pair/skills/marimo-pair"
+enabled = true
+
+[[skills.skill]]
 name = "ics-extractor"
 repo = "dmp-skills/ics-extractor"
 enabled = true
@@ -79,6 +97,16 @@ name = "add-external-skill-repo"
 repo = "dmp-skills/add-external-skill-repo"
 enabled = true
 install_targets = { fht = "./.codex" }
+
+[[skills.skill]]
+name = "academic-research-grill"
+repo = "dmp-skills/academic-research-grill"
+enabled = true
+
+[[skills.skill]]
+name = "ggplot-data-visualization"
+repo = "dmp-skills/ggplot-data-visualization"
+enabled = true
 
 [update]
 exclude = [

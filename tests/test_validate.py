@@ -130,6 +130,29 @@ class ValidateSkillsTests(unittest.TestCase):
 
             self.assertTrue(result.ok)
 
+    def test_validate_accepts_folded_frontmatter_and_singular_reference_dir(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skill_dir = root / "skill"
+            (skill_dir / "reference").mkdir(parents=True)
+            (skill_dir / "SKILL.md").write_text(
+                textwrap.dedent(
+                    """
+                    ---
+                    name: skill
+                    description: >-
+                      Drive a live notebook and inspect its state.
+                    allowed-tools: Bash(script.sh *), Read
+                    ---
+                    """
+                ).lstrip(),
+                encoding="utf-8",
+            )
+
+            result = validate_skills(_config(root, [Skill("skill", "skill", True)]))
+
+            self.assertTrue(result.ok)
+
     def test_validate_reports_unexpected_agents_file_and_invalid_openai_yaml(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

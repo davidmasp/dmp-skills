@@ -4,3 +4,9 @@
 [submodule "external/mattpocock/skills"]
 	path = external/mattpocock/skills
 	url = https://github.com/mattpocock/skills.git
+[submodule "external/marimo-team/skills"]
+	path = external/marimo-team/skills
+	url = https://github.com/marimo-team/skills.git
+[submodule "external/marimo-team/marimo-pair"]
+	path = external/marimo-team/marimo-pair
+	url = https://github.com/marimo-team/marimo-pair.git

@@ -6,7 +6,7 @@ from pathlib import Path
 from .config import Config, Skill
 
 
-ALLOWED_TOP_LEVEL_ENTRIES = {"SKILL.md", "agents", "references", "scripts"}
+ALLOWED_TOP_LEVEL_ENTRIES = {"SKILL.md", "agents", "reference", "references", "scripts"}
 ALLOWED_TOP_LEVEL_SUFFIXES = {".md"}
 ALLOWED_AGENTS_FILES = {"openai.yaml"}
 CLUTTER_NAMES = {".DS_Store", "Thumbs.db", "__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache"}
@@ -98,9 +98,13 @@ def _read_frontmatter(path: Path) -> tuple[dict[str, str] | None, str | None]:
 
 def _parse_flat_yaml_mapping(lines: list[str]) -> tuple[dict[str, str], str | None]:
     data: dict[str, str] = {}
-    for line_number, raw_line in enumerate(lines, start=2):
+    line_index = 0
+    while line_index < len(lines):
+        raw_line = lines[line_index]
+        line_number = line_index + 2
         line = raw_line.strip()
         if not line or line.startswith("#"):
+            line_index += 1
             continue
         if raw_line[:1].isspace():
             return {}, f"line {line_number} uses nested content; expected key/value frontmatter"
@@ -110,7 +114,21 @@ def _parse_flat_yaml_mapping(lines: list[str]) -> tuple[dict[str, str], str | No
         key = key.strip()
         if not key:
             return {}, f"line {line_number} has an empty key"
-        data[key] = _unquote_scalar(value.strip())
+        value = value.strip()
+        if value in {">", ">-", ">+", "|", "|-", "|+"}:
+            block_lines: list[str] = []
+            line_index += 1
+            while line_index < len(lines):
+                block_line = lines[line_index]
+                if block_line and not block_line[:1].isspace():
+                    break
+                block_lines.append(block_line.strip())
+                line_index += 1
+            separator = "\n" if value.startswith("|") else " "
+            data[key] = separator.join(block_lines).strip()
+            continue
+        data[key] = _unquote_scalar(value)
+        line_index += 1
     return data, None
 
 
@@ -152,7 +170,7 @@ def _validate_layout(skill: Skill, skill_path: Path) -> list[SkillValidationIssu
                     if yaml_error is not None:
                         add(openai_yaml, f"invalid YAML: {yaml_error}")
 
-    for directory_name in ("references", "scripts"):
+    for directory_name in ("reference", "references", "scripts"):
         directory = skill_path / directory_name
         if directory.exists() and not directory.is_dir():
             add(directory, f"{directory_name} must be a directory")
