@@ -108,6 +108,11 @@ name = "ggplot-data-visualization"
 repo = "dmp-skills/ggplot-data-visualization"
 enabled = true
 
+[[skills.skill]]
+name = "typesafe-ai"
+repo = "dmp-skills/typesafe-ai"
+enabled = true
+
 [update]
 exclude = [
 ]

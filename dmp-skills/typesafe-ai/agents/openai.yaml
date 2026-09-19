@@ -1,0 +1,7 @@
+interface:
+  display_name: "TypeSafe AI"
+  short_description: "Build typed AI judgments into software"
+  default_prompt: "Use $typesafe-ai to design or build this feature with TypeSafe."
+
+policy:
+  allow_implicit_invocation: false
