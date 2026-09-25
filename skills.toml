@@ -118,6 +118,11 @@ name = "typesafe-ai"
 repo = "dmp-skills/typesafe-ai"
 enabled = true
 
+[[skills.skill]]
+name = "materials-methods"
+repo = "dmp-skills/materials-methods"
+enabled = true
+
 [update]
 exclude = [
 ]

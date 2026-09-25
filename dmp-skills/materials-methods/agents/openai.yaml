@@ -1,0 +1,7 @@
+interface:
+  display_name: "Materials and Methods"
+  short_description: "Draft methods from analysis code and pipelines"
+  default_prompt: "Use $materials-methods to inspect this analysis and draft a publication-style Materials and Methods document."
+
+policy:
+  allow_implicit_invocation: false
