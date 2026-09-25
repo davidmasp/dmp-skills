@@ -1,0 +1,55 @@
+[installation]
+default_target = "~/.agents/skills"
+
+[repositories.mattpocock]
+path = "external/mattpocock/skills"
+url = "https://github.com/mattpocock/skills.git"
+
+[[skills.skill]]
+name = "grill-me"
+repo = "external/mattpocock/skills/skills/productivity/grill-me"
+enabled = true
+
+[[skills.skill]]
+name = "grilling"
+repo = "external/mattpocock/skills/skills/productivity/grilling"
+enabled = true
+
+[[skills.skill]]
+name = "handoff"
+repo = "external/mattpocock/skills/skills/productivity/handoff"
+enabled = true
+
+[[skills.skill]]
+name = "justfile-builder"
+repo = "dmp-skills/justfile-builder"
+enabled = true
+
+[[skills.skill]]
+name = "gprofiler-gost"
+repo = "dmp-skills/gprofiler-gost"
+enabled = true
+
+[[skills.skill]]
+name = "academic-research-grill"
+repo = "dmp-skills/academic-research-grill"
+enabled = true
+
+[[skills.skill]]
+name = "ggplot-data-visualization"
+repo = "dmp-skills/ggplot-data-visualization"
+enabled = true
+
+[[skills.skill]]
+name = "uv-pep723"
+repo = "dmp-skills/uv-pep723"
+enabled = true
+
+[[skills.skill]]
+name = "materials-methods"
+repo = "dmp-skills/materials-methods"
+enabled = true
+
+[update]
+exclude = [
+]
