@@ -1,0 +1,4 @@
+interface:
+  display_name: "UV PEP 723 Script"
+  short_description: "Build standalone Python scripts for uv"
+  default_prompt: "Use $uv-pep723 to develop this Python task as a standalone PEP 723 script runnable by uv."

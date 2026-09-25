@@ -109,6 +109,11 @@ repo = "dmp-skills/ggplot-data-visualization"
 enabled = true
 
 [[skills.skill]]
+name = "uv-pep723"
+repo = "dmp-skills/uv-pep723"
+enabled = true
+
+[[skills.skill]]
 name = "typesafe-ai"
 repo = "dmp-skills/typesafe-ai"
 enabled = true
