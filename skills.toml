@@ -109,6 +109,11 @@ repo = "dmp-skills/ggplot-data-visualization"
 enabled = true
 
 [[skills.skill]]
+name = "marimo-r-plots"
+repo = "dmp-skills/marimo-r-plots"
+enabled = true
+
+[[skills.skill]]
 name = "uv-pep723"
 repo = "dmp-skills/uv-pep723"
 enabled = true

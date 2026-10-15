@@ -1,0 +1,7 @@
+interface:
+  display_name: "R Plots in marimo"
+  short_description: "Embed R and ggplot2 figures in marimo notebooks"
+  default_prompt: "Use $marimo-r-plots to add R/ggplot2 figures to this marimo notebook."
+
+policy:
+  allow_implicit_invocation: false

@@ -22,6 +22,12 @@ Create a source-faithful draft that a researcher can later adapt for a publicati
 - Judge package relevance by its scientific role. Name packages that implement a reported analysis or numerical method, such as Scanpy or NumPy when their methods matter. Omit routine data handling or execution dependencies such as pandas, Polars, uv, Typer, or requests unless their behavior is itself part of the reported scientific method.
 - Treat a version range as a range, not an exact installed version. If a relevant version or other material fact is missing or conflicting, ask the user a focused question. Provide a runnable command for information only the analysis environment can supply; for example, request R package versions with `Rscript -e 'for (p in c("PACKAGE_A", "PACKAGE_B")) cat(p, as.character(packageVersion(p)), "\n")'`, to be run in the original analysis environment. Do not guess from current online releases.
 
+## Cite scientific software and published data
+
+- For scientifically relevant software named in the draft, check for a readily identifiable software or methods paper. Search online or use package-provided citation metadata, such as `citation("PACKAGE")` in R. Verify that the paper refers to the software or method actually used and that its DOI or PMID is valid; do not invent a citation.
+- When input or reference data come from a published paper, identify and verify the paper describing the data. Cite that paper where the data are introduced in the draft.
+- Place citation markers beside the relevant software or data mention using exactly `[REF DOI:10.xxxx/...]` or `[REF PMID:12345678]`, with the real identifier in place of the example. If no suitable citation is readily available, omit the marker and any explanation from the document. Tell the user which software or data were left uncited and why in the final report.
+
 ## Agree on scope, then draft
 
 After inspecting the source, present a short bullet outline of the proposed sections and methods, along with the specific uncertainties that affect the draft. Ask the user to confirm or correct it, and wait for confirmation before writing the document.
