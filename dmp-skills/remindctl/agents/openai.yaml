@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apple Reminders"
+  short_description: "Manage reminders with personal list routing"
+  default_prompt: "Use $remindctl to manage my Apple Reminders using my existing lists and Obsidian conventions."

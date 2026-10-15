@@ -123,6 +123,11 @@ name = "materials-methods"
 repo = "dmp-skills/materials-methods"
 enabled = true
 
+[[skills.skill]]
+name = "remindctl"
+repo = "dmp-skills/remindctl"
+enabled = true
+
 [update]
 exclude = [
 ]
