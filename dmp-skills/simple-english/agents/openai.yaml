@@ -1,0 +1,7 @@
+interface:
+  display_name: "Simple English"
+  short_description: "Write simple English in the style of ASD-STE100"
+  default_prompt: "Use $simple-english to write or revise this text in simple English in the style of ASD-STE100."
+
+policy:
+  allow_implicit_invocation: false
